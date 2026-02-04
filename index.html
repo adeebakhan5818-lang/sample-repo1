@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Management App</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <!-- Header -->
+                <div class="mb-4">
+                    <h1 class="text-center text-primary mb-4">
+                        <i class="fas fa-address-book"></i> Contact Manager
+                    </h1>
+                </div>
+
+                <!-- Add/Edit Contact Form -->
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">
+                            <span id="formTitle">Add New Contact</span>
+                        </h5>
+                        <form id="contactForm">
+                            <div class="mb-3">
+                                <label for="contactName" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="contactName" 
+                                       placeholder="Enter full name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="contactEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="contactEmail" 
+                                       placeholder="Enter email address" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="contactPhone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="contactPhone" 
+                                       placeholder="Enter phone number" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="contactAddress" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="contactAddress" 
+                                       placeholder="Enter address">
+                            </div>
+                            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                                <button type="submit" class="btn btn-primary" id="submitBtn">
+                                    <i class="fas fa-plus"></i> Add Contact
+                                </button>
+                                <button type="button" class="btn btn-secondary d-none" id="cancelBtn">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="mb-4">
+                    <input type="text" class="form-control" id="searchInput" 
+                           placeholder="Search contacts by name or email...">
+                </div>
+
+                <!-- Contacts List -->
+                <div id="contactsContainer">
+                    <div class="alert alert-info text-center" id="emptyMessage">
+                        <i class="fas fa-inbox"></i> No contacts yet. Add one to get started!
+                    </div>
+                </div>
+
+                <!-- Contacts Count -->
+                <div class="text-center mt-4">
+                    <small class="text-muted" id="contactCount">Total Contacts: 0</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                <strong class="me-auto">Notification</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toastMessage">
+                Contact added successfully!
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

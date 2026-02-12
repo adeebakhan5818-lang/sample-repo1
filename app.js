@@ -29,6 +29,11 @@ class ContactManager {
         document.getElementById('searchInput').addEventListener('keyup', (e) => {
             this.filterContacts(e.target.value);
         });
+
+        // Delete confirmation modal
+        document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+            this.confirmDelete();
+        });
     }
 
     handleFormSubmit() {
@@ -76,12 +81,26 @@ class ContactManager {
     }
 
     deleteContact(id) {
-        if (confirm('Are you sure you want to delete this contact?')) {
-            this.contacts = this.contacts.filter(c => c.id !== id);
+        this.contactIdToDelete = id;
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+        deleteModal.show();
+    }
+
+    confirmDelete() {
+        if (this.contactIdToDelete) {
+            this.contacts = this.contacts.filter(c => c.id !== this.contactIdToDelete);
             this.saveContacts();
             this.renderContacts();
             this.updateContactCount();
             this.showToast('Contact deleted successfully!', 'success');
+
+            // Close the modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
+            if (modal) {
+                modal.hide();
+            }
+
+            this.contactIdToDelete = null;
         }
     }
 

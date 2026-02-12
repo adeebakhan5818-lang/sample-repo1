@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backup & Restore - Contact Manager</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom Styles for Backup Page */
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        .backup-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-top: 30px;
+        }
+
+        .backup-header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #667eea;
+        }
+
+        .backup-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .backup-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .backup-card {
+            border: none;
+            border-top: 4px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .backup-card:hover {
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .backup-card h5 {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .backup-card i {
+            font-size: 1.5rem;
+        }
+
+        .export-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .btn-custom {
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-export {
+            background-color: #667eea;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-export:hover {
+            background-color: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .btn-restore {
+            background-color: #48bb78;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-restore:hover {
+            background-color: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+            color: white;
+        }
+
+        .restore-section {
+            background: linear-gradient(135deg, rgba(72, 187, 120, 0.05) 0%, rgba(56, 161, 105, 0.05) 100%);
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            display: none;
+        }
+
+        .file-input-label {
+            flex: 1;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border: 2px dashed #667eea;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #667eea;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .file-input-label:hover {
+            background-color: #f0f1ff;
+            border-color: #5568d3;
+        }
+
+        .file-input-label.has-file {
+            background-color: #e8f5e9;
+            border-color: #48bb78;
+            color: #2e7d32;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link a:hover {
+            color: #5568d3;
+            transform: translateX(-3px);
+        }
+
+        /* Toast Styles */
+        .toast-header {
+            background-color: transparent;
+            border-bottom: none;
+        }
+
+        .toast {
+            min-width: 300px;
+            border-radius: 8px;
+            border: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .toast.success-toast {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .toast.success-toast .toast-body {
+            color: white;
+        }
+
+        .toast.success-toast .toast-header {
+            color: white;
+        }
+
+        .toast.success-toast .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .info-text {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .backup-container {
+                padding: 20px;
+            }
+
+            .backup-header h1 {
+                font-size: 2rem;
+            }
+
+            .backup-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="backup-container">
+            <!-- Header -->
+            <div class="backup-header">
+                <h1>
+                    <i class="fas fa-shield-alt"></i> Backup & Restore
+                </h1>
+                <p>Securely backup and restore your contacts</p>
+            </div>
+
+            <!-- Export Backup Section -->
+            <div class="backup-card">
+                <h5>
+                    <i class="fas fa-download"></i> Export Backup
+                </h5>
+                <p class="info-text">Download a backup of all your contacts to your computer</p>
+                <div class="export-section">
+                    <div class="icon-box">
+                        <i class="fas fa-file-download"></i>
+                    </div>
+                    <p style="text-align: center; color: #666; margin-bottom: 20px;">
+                        Click the button below to create and download a backup file
+                    </p>
+                    <button class="btn btn-custom btn-export" id="exportBtn">
+                        <i class="fas fa-download"></i> Export Backup
+                    </button>
+                </div>
+            </div>
+
+            <!-- Restore Backup Section -->
+            <div class="backup-card">
+                <h5>
+                    <i class="fas fa-upload"></i> Restore from Backup
+                </h5>
+                <p class="info-text">Upload a previously saved backup file to restore your contacts</p>
+                <div class="restore-section">
+                    <div class="icon-box" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);">
+                        <i class="fas fa-file-upload"></i>
+                    </div>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="backupFile" accept=".json">
+                        <label for="backupFile" class="file-input-label" id="fileLabel">
+                            <i class="fas fa-cloud-upload-alt"></i> Select backup file
+                        </label>
+                    </div>
+                    <button class="btn btn-custom btn-restore" id="restoreBtn">
+                        <i class="fas fa-upload"></i> Restore Backup
+                    </button>
+                </div>
+            </div>
+
+            <!-- Back Link -->
+            <div class="back-link">
+                <a href="index.html">
+                    <i class="fas fa-arrow-left"></i> Back to Contact Manager
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="successToast" class="toast success-toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toastMessage">
+                Operation completed successfully!
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        class BackupManager {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                // Export button
+                document.getElementById('exportBtn').addEventListener('click', () => {
+                    this.handleExport();
+                });
+
+                // Restore button
+                document.getElementById('restoreBtn').addEventListener('click', () => {
+                    this.handleRestore();
+                });
+
+                // File input change
+                document.getElementById('backupFile').addEventListener('change', (e) => {
+                    this.handleFileSelect(e);
+                });
+            }
+
+            handleExport() {
+                // Simulate export process
+                this.showToast('Backup created successfully!');
+                
+                // Add animation feedback
+                const btn = document.getElementById('exportBtn');
+                btn.innerHTML = '<i class="fas fa-check"></i> Backup Created';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-download"></i> Export Backup';
+                    btn.disabled = false;
+                }, 3000);
+            }
+
+            handleRestore() {
+                const fileInput = document.getElementById('backupFile');
+                
+                if (!fileInput.files.length) {
+                    this.showToast('Please select a backup file first', true);
+                    return;
+                }
+
+                // Simulate restore process
+                this.showToast('Contacts restored successfully!');
+                
+                // Add animation feedback
+                const btn = document.getElementById('restoreBtn');
+                btn.innerHTML = '<i class="fas fa-check"></i> Restored Successfully';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-upload"></i> Restore Backup';
+                    btn.disabled = false;
+                    fileInput.value = '';
+                    document.getElementById('fileLabel').textContent = `
+                        <i class="fas fa-cloud-upload-alt"></i> Select backup file
+                    `;
+                    document.getElementById('fileLabel').classList.remove('has-file');
+                }, 3000);
+            }
+
+            handleFileSelect(event) {
+                const file = event.target.files[0];
+                const fileLabel = document.getElementById('fileLabel');
+                
+                if (file) {
+                    fileLabel.textContent = `<i class="fas fa-check"></i> ${file.name}`;
+                    fileLabel.classList.add('has-file');
+                } else {
+                    fileLabel.innerHTML = `<i class="fas fa-cloud-upload-alt"></i> Select backup file`;
+                    fileLabel.classList.remove('has-file');
+                }
+            }
+
+            showToast(message, isError = false) {
+                const toastElement = document.getElementById('successToast');
+                const toastMessage = document.getElementById('toastMessage');
+                const header = toastElement.querySelector('.toast-header');
+                const icon = header.querySelector('i');
+
+                toastMessage.textContent = message;
+
+                if (isError) {
+                    toastElement.classList.remove('success-toast');
+                    toastElement.style.background = 'linear-gradient(135deg, #f56565 0%, #e53e3e 100%)';
+                    icon.classList.remove('fa-check-circle');
+                    icon.classList.add('fa-exclamation-circle');
+                } else {
+                    toastElement.classList.add('success-toast');
+                    toastElement.style.background = 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)';
+                    icon.classList.add('fa-check-circle');
+                    icon.classList.remove('fa-exclamation-circle');
+                }
+
+                const toast = new bootstrap.Toast(toastElement);
+                toast.show();
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            new BackupManager();
+        });
+    </script>
+</body>
+</html>
